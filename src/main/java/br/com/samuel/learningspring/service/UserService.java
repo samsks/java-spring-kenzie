@@ -17,8 +17,8 @@ public class UserService {
         this.userRepository = userRepository;
     }
     private void checkEmailAndCPF(final CreateUserDTO userData){
-        if (userRepository.existsUserByEmail(userData.getEmail())) throw new AppException("Email already in use", HttpStatus.CONFLICT);
-        if (userRepository.existsUserByCpf(userData.getCpf())) throw new AppException("CPF already in use", HttpStatus.CONFLICT);
+        if (userRepository.existsUserByEmail(userData.getEmail())) throw new AppException("emailAlreadyExists", HttpStatus.CONFLICT);
+        if (userRepository.existsUserByCpf(userData.getCpf())) throw new AppException("cpfAlreadyExists", HttpStatus.CONFLICT);
     }
 
     public User createUser(final CreateUserDTO userData){
@@ -35,13 +35,13 @@ public class UserService {
     }
 
     public User readUserById(final Long id) {
-        return userRepository.findById(id).orElseThrow(() -> new AppException("User not found",  HttpStatus.NOT_FOUND));
+        return userRepository.findById(id).orElseThrow(() -> new AppException("userNotFound",  HttpStatus.NOT_FOUND));
     }
 
     public User updateUser(final CreateUserDTO userData, final Long id) {
         checkEmailAndCPF(userData);
 
-        final User foundUser = userRepository.findById(id).orElseThrow(() -> new AppException("User not found",  HttpStatus.NOT_FOUND));
+        final User foundUser = userRepository.findById(id).orElseThrow(() -> new AppException("userNotFound",  HttpStatus.NOT_FOUND));
 
         foundUser.setName(userData.getName());
         foundUser.setCpf(userData.getCpf());
@@ -53,12 +53,12 @@ public class UserService {
     }
 
     public void deleteUser(final Long id) {
-        final User foundUser = userRepository.findById(id).orElseThrow(() -> new AppException("User not found",  HttpStatus.NOT_FOUND));
+        final User foundUser = userRepository.findById(id).orElseThrow(() -> new AppException("userNotFound",  HttpStatus.NOT_FOUND));
         userRepository.delete(foundUser);
     }
 
     public User createDeposit(final CreateDepositDTO depositData, final Long id){
-        final User foundUser = userRepository.findById(id).orElseThrow(() -> new AppException("User not found", HttpStatus.NOT_FOUND));
+        final User foundUser = userRepository.findById(id).orElseThrow(() -> new AppException("userNotFound", HttpStatus.NOT_FOUND));
 
         final float currentBalance = foundUser.getBalance();
 

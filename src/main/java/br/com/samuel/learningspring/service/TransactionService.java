@@ -23,14 +23,14 @@ public class TransactionService {
     }
 
     public Transaction createTransaction(final CreateTransactionDTO transactionData){
-        final User foundPayerUser = userRepository.findById(transactionData.getPayer_id()).orElseThrow(() -> new AppException("Payer not found", HttpStatus.NOT_FOUND));
-        if (Objects.equals(foundPayerUser.getType(), "SELLER")) throw new AppException("Payer can't be a seller", HttpStatus.FORBIDDEN);
-        final User foundPayeeUser = userRepository.findById(transactionData.getPayee_id()).orElseThrow(() -> new AppException("Payee not found",  HttpStatus.NOT_FOUND));
+        final User foundPayerUser = userRepository.findById(transactionData.getPayer_id()).orElseThrow(() -> new AppException("payerNotFound", HttpStatus.NOT_FOUND));
+        if (Objects.equals(foundPayerUser.getType(), "SELLER")) throw new AppException("invalidTransactionUserType", HttpStatus.FORBIDDEN);
+        final User foundPayeeUser = userRepository.findById(transactionData.getPayee_id()).orElseThrow(() -> new AppException("payeeNotFound",  HttpStatus.NOT_FOUND));
 
         final float transactionValue = transactionData.getValue();
 
         final float payerCurrentBalance = foundPayerUser.getBalance();
-        if (payerCurrentBalance < transactionValue) throw new AppException("Insufficient funds", HttpStatus.FORBIDDEN);
+        if (payerCurrentBalance < transactionValue) throw new AppException("balanceNotSufficient", HttpStatus.FORBIDDEN);
 
         final float payeeCurrentBalance = foundPayeeUser.getBalance();
 
